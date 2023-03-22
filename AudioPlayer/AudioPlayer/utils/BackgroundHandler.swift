@@ -12,7 +12,7 @@
     import UIKit
 
     /// A `BackgroundTaskCreator` serves the purpose of creating background tasks.
-    protocol BackgroundTaskCreator: class {
+protocol BackgroundTaskCreator: AnyObject {
         /// Marks the beginning of a new long-running background task.
         ///
         /// - Parameter handler: A handler to be called shortly before the app’s remaining background time reaches 0.
@@ -43,11 +43,10 @@ class BackgroundHandler: NSObject {
     #if !os(OSX)
     /// The background task creator
     var backgroundTaskCreator: BackgroundTaskCreator = UIApplication.shared
+    #endif
+
     /// The backround task identifier if a background task started. Nil if not.
     private var taskIdentifier: UIBackgroundTaskIdentifier?
-    #else
-    private var taskIdentifier: Int?
-    #endif
 
     /// The number of background request received. When this counter hits 0, the background task, if any, will be
     /// terminated.
@@ -100,7 +99,7 @@ class BackgroundHandler: NSObject {
                 return false
             }
 
-            if taskIdentifier != UIBackgroundTaskIdentifier.invalid {
+        if taskIdentifier != UIBackgroundTaskIdentifier.invalid {
                 backgroundTaskCreator.endBackgroundTask(taskIdentifier)
             }
             self.taskIdentifier = nil

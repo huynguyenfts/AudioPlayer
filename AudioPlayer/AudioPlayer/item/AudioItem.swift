@@ -141,6 +141,11 @@ open class AudioItem: NSObject {
     }
 
     // MARK: Additional properties
+    /// The id of the item
+    ///
+    ///  It help to querry item in list
+    
+    public var id: String?
 
     /// The artist of the item.
     ///
@@ -182,10 +187,7 @@ open class AudioItem: NSObject {
             #else
                 imageSize = newValue?.size
                 artwork = newValue.map { image in
-                    if #available(iOS 10.0, tvOS 10.0, *) {
-                        return MPMediaItemArtwork(boundsSize: image.size) { _ in image }
-                    }
-                    return MPMediaItemArtwork(image: image)
+                    return MPMediaItemArtwork(boundsSize: image.size) { _ in image }
                 }
             #endif
         }

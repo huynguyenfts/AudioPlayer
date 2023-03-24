@@ -45,10 +45,8 @@ extension AudioPlayer {
             queue?.delegate = self
             if let realIndex = queue?.queue.firstIndex(of: items[index]) {
                 queue?.nextPosition = realIndex
-                currentItem = queue?.queue[realIndex]
-            } else {
-                currentItem = queue?.queue.first
             }
+            currentItem = queue?.nextItem()
         } else {
             stop()
             queue = nil

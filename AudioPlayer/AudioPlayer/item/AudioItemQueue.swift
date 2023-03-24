@@ -98,7 +98,7 @@ class AudioItemQueue {
 
         if oldMode.contains(.repeat) && !mode.contains(.repeat) && historic.last == queue[nextPosition] {
             nextPosition += 1
-        } else if !oldMode.contains(.repeat) && mode.contains(.repeat) && nextPosition == queue.count {
+        } else if !oldMode.contains(.repeat) && mode.contains(.repeat) && nextPosition <= queue.count {
             nextPosition -= 1
         }
 

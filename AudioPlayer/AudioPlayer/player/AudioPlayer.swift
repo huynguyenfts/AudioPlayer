@@ -111,6 +111,13 @@ public class AudioPlayer: NSObject {
                 if #available(iOS 10.0, tvOS 10.0, OSX 10.12, *) {
                     playerItem.preferredForwardBufferDuration = self.preferredForwardBufferDuration
                 }
+                
+                // get artworkImage from url
+                if currentItem.artworkImage == nil {
+                    generateThumbnail(path: info.url) { [weak self] image in
+                        self?.currentItem?.artworkImage = image
+                    }
+                }
 
                 //Creates new player
                 player = AVPlayer(playerItem: playerItem)
@@ -410,6 +417,24 @@ public class AudioPlayer: NSObject {
             playerItem.preferredForwardBufferDuration = self.preferredForwardBufferDuration
         }
     }
+    
+    func generateThumbnail(path: URL, completion : @escaping ((UIImage?) ->())) {
+        DispatchQueue.global().async {
+            let asset: AVAsset = AVAsset(url: path)
+            let imageGenerator = AVAssetImageGenerator(asset: asset)
+            imageGenerator.appliesPreferredTrackTransform = true
+            let timestamp = CMTime(value: asset.duration.value / 2, timescale: asset.duration.timescale)
+            do {
+                let thumbnail = try imageGenerator.copyCGImage(at: timestamp, actualTime: nil)
+                DispatchQueue.main.async {
+                    completion(UIImage(cgImage: thumbnail))
+                }
+            } catch let err as NSError {
+                print(err)
+                completion(nil)
+            }
+        }
+    }
 }
 
 extension AudioPlayer: EventListener {
@@ -434,4 +459,5 @@ extension AudioPlayer: EventListener {
             handleSeekEvent(from: eventProducer, with: event)
         }
     }
+    
 }

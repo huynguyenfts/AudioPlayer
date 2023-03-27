@@ -46,4 +46,5 @@ extension MPNowPlayingInfoCenter {
 
         nowPlayingInfo = info
     }
+    
 }
